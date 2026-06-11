@@ -1,0 +1,189 @@
+<title>Clasificador de Fósiles</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="styles/desplegables.css">
+
+<!-- fossil_info.html: Fragmento de HTML para la sección de información de fósiles con cuadros desplegables -->
+<div id="section-explore-content" class="app-section flex flex-col items-center justify-center min-h-[400px] px-4 py-8">
+    <h2 class="section-title text-4xl font-extrabold text-green-800 mb-6">INFORMACIÓN DE FÓSILES</h2>
+    <p class="text-center mt-4 text-gray-400 text-lg max-w-2xl leading-relaxed mb-8">
+        Sumérgete en el fascinante mundo de la paleontología. Aquí encontrarás descripciones detalladas,
+        imágenes y datos curiosos sobre una amplia variedad de fósiles, sus épocas y formaciones.
+    </p>
+
+    <!-- Contenedor para los cuadros desplegables -->
+    <div class="w-full max-w-3xl space-y-4">
+
+        <!-- Cuadro Desplegable: Ammonites -->
+        <details class="pixel-accordion-item">
+            <summary class="pixel-accordion-summary">
+                <span class="summary-text">Ammonites:</span>
+                <span class="summary-icon">▶</span>
+            </summary>
+            <div class="pixel-accordion-content">
+                <p>Moluscos cefalópodos marinos extintos con conchas en espiral. Vivieron desde el Devónico hasta el Cretácico. Sus conchas se fossilizan comúnmente y son importantes fósiles guía.</p>
+                <img src="../pages/assets/Ammonite.png" alt="Imagen de Ammonites" class="mt-4 rounded-lg border-2 border-gray-600">
+            </div>
+        </details>
+
+        <!-- Cuadro Desplegable: Belemnites -->
+        <details class="pixel-accordion-item">
+            <summary class="pixel-accordion-summary">
+                <span class="summary-text">Belemnites:</span>
+                <span class="summary-icon">▶</span>
+            </summary>
+            <div class="pixel-accordion-content">
+                <p>Cefalópodos marinos extintos parecidos a calamares, conocidos por sus rostra en forma de bala. Eran depredadores y sus fósiles son abundantes en rocas del Mesozoico.</p>
+                <img src="../pages/assets/belemnites.png" alt="Imagen de Belemnites" class="mt-4 rounded-lg border-2 border-gray-600">
+            </div>
+        </details>
+
+        <!-- Cuadro Desplegable: Corales -->
+        <details class="pixel-accordion-item">
+            <summary class="pixel-accordion-summary">
+                <span class="summary-text">Corales:</span>
+                <span class="summary-icon">▶</span>
+            </summary>
+            <div class="pixel-accordion-content">
+                <p>Restos de colonias de organismos marinos que construyen esqueletos calcáreos. Los corales fósiles nos dan información sobre antiguos arrecifes y climas oceánicos.</p>
+                <img src="../pages/assets/coral.png" alt="Imagen de Corales" class="mt-4 rounded-lg border-2 border-gray-600">
+            </div>
+        </details>
+
+        <!-- Cuadro Desplegable: Crinoides -->
+        <details class="pixel-accordion-item">
+            <summary class="pixel-accordion-summary">
+                <span class="summary-text">Crinoides:</span>
+                <span class="summary-icon">▶</span>
+            </summary>
+            <div class="pixel-accordion-content">
+                <p>Equinodermos marinos conocidos como "lirios de mar", con tallos y coronas. Sus segmentos individuales son fósiles muy comunes.</p>
+                <img src="../pages/assets/crinoide.png" alt="Imagen de Crinoides" class="mt-4 rounded-lg border-2 border-gray-600">
+            </div>
+        </details>
+
+        <!-- Cuadro Desplegable: Leaf Fossils (Fósiles de Hojas) -->
+        <details class="pixel-accordion-item">
+            <summary class="pixel-accordion-summary">
+                <span class="summary-text">Fósiles de Hojas:</span>
+                <span class="summary-icon">▶</span>
+            </summary>
+            <div class="pixel-accordion-content">
+                <p>Impresiones o restos carbonizados de hojas de plantas antiguas. Revelan información valiosa sobre la flora prehistórica y los entornos climáticos.</p>
+                <img src="../pages/assets/leaf.png" alt="Imagen de Fósiles de Hojas" class="mt-4 rounded-lg border-2 border-gray-600">
+            </div>
+        </details>
+
+        <!-- Cuadro Desplegable: Trilobites -->
+        <details class="pixel-accordion-item">
+            <summary class="pixel-accordion-summary">
+                <span class="summary-text">Trilobites:</span>
+                <span class="summary-icon">▶</span>
+            </summary>
+            <div class="pixel-accordion-content">
+                <p>Artrópodos marinos extintos, muy diversos, con cuerpos segmentados. Son algunos de los fósiles más icónicos y estudiados del Paleozoico.</p>
+                <img src="../pages/assets/trilobite.png" alt="Imagen de Trilobites" class="mt-4 rounded-lg border-2 border-gray-600">
+            </div>
+        </details>
+        
+        <!-- Cuadro Desplegable: Bivalves (Bivalvos) -->
+        <details class="pixel-accordion-item">
+            <summary class="pixel-accordion-summary">
+                <span class="summary-text">Bivalvos:</span>
+                <span class="summary-icon">▶</span>
+            </summary>
+            <div class="pixel-accordion-content">
+                <p>Moluscos con dos conchas, como almejas, ostras y mejillones. Abundantes en muchos entornos marinos a lo largo de la historia geológica.</p>
+                <img src="../pages/assets/bivaldos.png" alt="Imagen de Bivalvos" class="mt-4 rounded-lg border-2 border-gray-600">
+            </div>
+        </details>
+
+        <!-- Cuadro Desplegable: Dinosaurs (Dinosaurios) -->
+        <details class="pixel-accordion-item">
+            <summary class="pixel-accordion-summary">
+                <span class="summary-text">Dinosaurios:</span>
+                <span class="summary-icon">▶</span>
+            </summary>
+            <div class="pixel-accordion-content">
+                <p>Fósiles de huesos o huellas de reptiles prehistóricos. Los dinosaurios dominaron la Tierra durante el Mesozoico.</p>
+                <img src="../pages/assets/dinosaurio.png" alt="Imagen de Dinosaurios" class="mt-4 rounded-lg border-2 border-gray-600">
+            </div>
+        </details>
+
+        <!-- Cuadro Desplegable: Echinoderms (Equinodermos) -->
+        <details class="pixel-accordion-item">
+            <summary class="pixel-accordion-summary">
+                <span class="summary-text">Equinodermos:</span>
+                <span class="summary-icon">▶</span>
+            </summary>
+            <div class="pixel-accordion-content">
+                <p>Invertebrados marinos como estrellas de mar, erizos de mar y dólares de arena. Muchos tienen un esqueleto calcáreo que se fosiliza bien.</p>
+                <img src="../pages/assets/esquinodermo.png" alt="Imagen de Equinodermos" class="mt-4 rounded-lg border-2 border-gray-600">
+            </div>
+        </details>
+
+        <!-- Cuadro Desplegable: Fishes (Peces) -->
+        <details class="pixel-accordion-item">
+            <summary class="pixel-accordion-summary">
+                <span class="summary-text">Peces:</span>
+                <span class="summary-icon">▶</span>
+            </summary>
+            <div class="pixel-accordion-content">
+                <p>Restos de peces, incluyendo escamas, espinas y esqueletos. Los fósiles de peces son comunes y ofrecen pistas sobre la evolución acuática.</p>
+                <img src="../pages/assets/fish.png" alt="Imagen de Peces" class="mt-4 rounded-lg border-2 border-gray-600">
+            </div>
+        </details>
+
+        <!-- Cuadro Desplegable: Forams (Foraminíferos) -->
+        <details class="pixel-accordion-item">
+            <summary class="pixel-accordion-summary">
+                <span class="summary-text">Foraminíferos:</span>
+                <span class="summary-icon">▶</span>
+            </summary>
+            <div class="pixel-accordion-content">
+                <p>Microfósiles de protozoos marinos con conchas calcáreas. Son cruciales para datar rocas y entender climas antiguos.</p>
+                <img src="../pages/assets/foramniferos.png" alt="Imagen de Foraminíferos" class="mt-4 rounded-lg border-2 border-gray-600">
+            </div>
+        </details>
+
+        <!-- Cuadro Desplegable: Gastropods (Gasterópodos) -->
+        <details class="pixel-accordion-item">
+            <summary class="pixel-accordion-summary">
+                <span class="summary-text">Gasterópodos:</span>
+                <span class="summary-icon">▶</span>
+            </summary>
+            <div class="pixel-accordion-content">
+                <p>Moluscos con una sola concha espiralada, como los caracoles. Pueden ser marinos, de agua dulce o terrestres.</p>
+                <img src="../pages/assets/gastropodo.png" alt="Imagen de Gasterópodos" class="mt-4 rounded-lg border-2 border-gray-600">
+            </div>
+        </details>
+
+        <!-- Cuadro Desplegable: Plants (Plantas) -->
+        <details class="pixel-accordion-item">
+            <summary class="pixel-accordion-summary">
+                <span class="summary-text">Plantas:</span>
+                <span class="summary-icon">▶</span>
+            </summary>
+            <div class="pixel-accordion-content">
+                <p>Otros fósiles de plantas, como troncos, semillas o partes indeterminadas. Son fundamentales para reconstruir antiguos ecosistemas terrestres.</p>
+                <img src="../pages/assets/leaf.png" alt="Imagen de Plantas" class="mt-4 rounded-lg border-2 border-gray-600">
+            </div>
+        </details>
+
+            <!-- para mas informacion -->
+        <details class="pixel-accordion-item">
+            <summary class="pixel-accordion-summary">
+                <span class="summary-text">mas informacion</span>
+                <span class="summary-icon">▶</span>
+            </summary>
+            <div class="pixel-accordion-content">
+                <p>Puedes encontrar mas informacion y fotos a traves de este <a href="https://www.nationalgeographic.com.es/temas/fosiles">link</a>  </p>
+                
+            </div>
+        </details>
+
+    </div>
+
+    <p class="text-center text-gray-500 text-md mt-8 italic">
+        Nota: Esta información es básica y puede ser expandida o enlazada a recursos externos.
+    </p>
+</div>

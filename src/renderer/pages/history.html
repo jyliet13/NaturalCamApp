@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Clasificador de Fósiles - Historial</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- CSS personalizado -->
+    <link rel="stylesheet" href="styles/sidebar.css">
+</head>
+<body class="bg-gray-900 text-white font-sans p-6">
+
+    <!-- Botón para borrar historial -->
+    <button onclick="localStorage.removeItem('historial_fosiles'); location.reload();"
+            class="bg-red-600 px-4 py-2 rounded text-white mb-4 hover:bg-red-700">
+        Borrar Historial
+    </button>
+
+    <!-- Contenido principal del historial -->
+    <div id="historyContent" class="content-section">
+        <h1 class="text-2xl font-bold mb-4">
+            HISTORIAL DE CLASIFICACIONES
+        </h1>
+
+        <div id="historyList" class="text-left w-full max-w-lg mt-6">
+            <p class="text-gray-400">Aquí se mostrarán tus clasificaciones pasadas.</p>
+            <ul id="historyUl" class="list-none p-0 m-0"></ul>
+        </div>
+
+        <h2 class="text-xl font-bold mb-4 mt-8">Resultados Guardados</h2>
+        <div id="historialContainer" class="space-y-4"></div>
+    </div>
+
+   
+
+
+</body>
+</html>

@@ -1,0 +1,77 @@
+/* Estilos para Cuadros Desplegables (Acordeón) */
+.pixel-accordion-item {
+    background-color: #2C3539; /* Fondo gris oscuro, el mismo que el main-panel */
+    border: 2px solid #4A5568; /* Borde intermedio */
+    border-radius: 4px;
+    margin-bottom: 8px; /* Espacio entre items */
+    box-shadow: 2px 2px 0px rgba(0,0,0,0.5);
+    overflow: hidden; /* Asegura que el contenido esté dentro de los bordes redondeados */
+}
+
+.pixel-accordion-summary {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 20px;
+    font-family: 'Press Start 2P', cursive;
+    font-size: 1.1rem;
+    color: #F4D03F; /* Color amarillo/dorado para el título */
+    cursor: pointer;
+    background-color: #37474F; /* Un tono un poco más claro que el fondo del item */
+    border-bottom: 2px solid #4A5568; /* Separador en la parte inferior del summary */
+    transition: background-color 0.2s ease-in-out;
+}
+
+.pixel-accordion-item[open] .pixel-accordion-summary {
+    background-color: #4A5568; /* Fondo más oscuro cuando está abierto */
+    color: #B4F8C8; /* Texto verde neón cuando está abierto */
+}
+
+.pixel-accordion-summary:hover {
+    background-color: #4A5568; /* Efecto hover en el summary */
+}
+
+.pixel-accordion-summary .summary-text {
+    flex-grow: 1; /* Permite que el texto ocupe el espacio */
+    text-align: left;
+}
+
+.pixel-accordion-summary .summary-icon {
+    font-family: monospace; /* Fuente monoespaciada para el triángulo */
+    font-size: 1.2rem;
+    transition: transform 0.2s ease-in-out;
+    margin-left: 10px; /* Espacio entre texto y icono */
+    color: #B4F8C8; /* Color verde para el icono */
+}
+
+.pixel-accordion-item[open] .pixel-accordion-summary .summary-icon {
+    transform: rotate(90deg); /* Gira el triángulo cuando el acordeón está abierto */
+}
+
+.pixel-accordion-content {
+    padding: 15px 20px;
+    background-color: #1D2024; /* Fondo oscuro para el contenido */
+    color: #B4F8C8; /* Texto verde neón para el contenido */
+    font-family: 'VT323', monospace;
+    font-size: 1rem;
+    border-top: 2px dashed #4A5568; /* Borde punteado para el contenido */
+    box-sizing: border-box;
+}
+
+.pixel-accordion-content p {
+    margin-bottom: 10px;
+    line-height: 1.5;
+}
+
+.pixel-accordion-content img {
+    max-width: 100%;
+    height: auto;
+    display: block; /* Para centrar si quieres con margin auto */
+    margin: 10px auto;
+}
+
+/* Ocultar el marcador por defecto de <details> en algunos navegadores si causa problemas */
+details > summary::marker,
+details > summary::-webkit-details-marker {
+  display: none;
+}

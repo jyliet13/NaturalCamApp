@@ -1,0 +1,564 @@
+ @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&display=swap');
+
+        body {
+            font-family: 'VT323', monospace; /* Fuente principal tipo terminal */
+            background-color: #1D2024; /* Negro Carbón */
+            color: #B4F8C8; /* Verde Neón Brillante */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+            box-sizing: border-box;
+            overflow: auto; /* Permite scroll si el contenido es demasiado grande */
+        }
+
+        /* Contenedor principal de toda la aplicación (sidebar + main content) */
+        .app-wrapper {
+            display: flex; /* Habilitar flexbox para sidebar y contenido principal */
+            background-color: #2C3539; /* Gris Pizarra Oscuro (fondo general del cuadro principal) */
+            border: 4px solid #4A5568; /* Gris Intermedio para bordes gruesos */
+            border-radius: 4px;
+            box-shadow: 4px 4px 0px rgba(0,0,0,0.5);
+            max-width: 1200px; /* Ancho máximo para acomodar sidebar y contenido */
+            width: 100%;
+            min-height: 600px; /* Altura mínima para el contenedor principal */
+            overflow: hidden; /* Asegura que los bordes ASCII no se desborden */
+            position: relative; /* Para los bordes ASCII del wrapper */
+        }
+
+        /* Bordes ASCII para el app-wrapper (el cuadro más externo) */
+        .app-wrapper::before {
+            content: "╔═══════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════╗";
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            font-family: 'VT323', monospace;
+            color: #4A5568;
+            font-size: 1.2rem;
+            white-space: nowrap;
+            overflow: hidden;
+            text-align: center;
+            line-height: 1; /* Ajustar para evitar espacio extra */
+        }
+        .app-wrapper::after {
+            content: "╚═══════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════╝";
+            position: absolute;
+            bottom: 0; left: 0; right: 0;
+            font-family: 'VT323', monospace;
+            color: #4A5568;
+            font-size: 1.2rem;
+            white-space: nowrap;
+            overflow: hidden;
+            text-align: center;
+            line-height: 1; /* Ajustar para evitar espacio extra */
+        }
+
+        /* Panel Lateral (Sidebar) - Izquierdo */
+        .sidebar-panel {
+            width: 250px; /* Ancho fijo para la barra lateral */
+            background-color: #1D2024; /* Fondo más oscuro para la sidebar */
+            padding: 20px;
+            border-right: 2px solid #4A5568; /* Separador de la barra lateral */
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start; /* Alinear elementos a la izquierda */
+            position: relative; /* Para bordes ASCII */
+            padding-top: 50px; /* Espacio para el borde superior del wrapper */
+            padding-bottom: 50px; /* Espacio para el borde inferior del wrapper */
+            z-index: 2; /* Para que esté por encima de los pseudo-elementos del wrapper */
+        }
+        .sidebar-panel::before {
+            content: "NaturalCam "; /* Título del maestro */
+            position: absolute;
+            top: 10px; /* Posición más abajo del borde superior */
+            left: 20px;
+            font-family: 'Press Start 2P', cursive;
+            color: #B4F8C8;
+            font-size: 1.2rem;
+            text-shadow: 1px 1px #000;
+        }
+        /* Líneas ASCII verticales de la sidebar */
+        .sidebar-panel::after {
+            content: "║";
+            position: absolute;
+            top: 0;
+            left: 0;
+            height: 100%;
+            font-family: 'VT323', monospace;
+            color: #4A5568;
+            font-size: 1.2rem;
+            white-space: pre; /* Permite saltos de línea y espacios */
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            height: 100%;
+            padding-top: 10px;
+            padding-bottom: 10px;
+            box-sizing: border-box;
+        }
+
+        /* Elementos del menú lateral */
+        .sidebar-item {
+            display: flex;
+            align-items: center;
+            padding: 10px 15px;
+            margin-bottom: 10px;
+            cursor: pointer;
+            background-color: transparent;
+            border: 2px solid transparent;
+            border-radius: 4px;
+            font-family: 'VT323', monospace;
+            font-size: 1.1rem;
+            color: #B4F8C8;
+            transition: all 0.1s ease-in-out;
+            width: 100%;
+            box-sizing: border-box;
+        }
+        .sidebar-item:hover {
+            background-color: #4A5568; /* Gris intermedio al pasar el ratón */
+            border-color: #B4F8C8;
+            color: #FFFFFF;
+            transform: translateY(-2px); /* Efecto de elevación */
+            box-shadow: 2px 2px 0px rgba(0,0,0,0.5); /* Sombra al elevar */
+        }
+        .sidebar-item.active {
+            background-color: #5DADE2; /* Azul eléctrico para el seleccionado */
+            color: #1D2024; /* Texto oscuro para contraste */
+            border-color: #2874A6;
+            box-shadow: 2px 2px 0px rgba(0,0,0,0.5);
+            transform: translateY(0); /* Asegurar que no esté "elevado" si ya está activo */
+        }
+        .sidebar-item img {
+            width: 24px; /* Tamaño de los iconos en el sidebar */
+            height: 24px;
+            margin-right: 8px;
+            image-rendering: pixelated;
+        }
+
+         /* Estilos para las vistas */
+      .view-section {
+        display: none;
+      }
+      .view-section.active {
+        display: block;
+      }
+
+        /* Panel Principal (Main Content) */
+        .main-panel {
+            flex-grow: 1; /* Ocupa el espacio restante */
+            padding: 30px;
+            display: flex;
+            flex-direction: column;
+            align-items: center; /* Centra horizontalmente los elementos flex en columna */
+            justify-content: flex-start;
+            position: relative; /* Para bordes ASCII y z-index */
+            padding-top: 50px; /* Espacio para el borde superior del wrapper */
+            padding-bottom: 50px; /* Espacio para el borde inferior del wrapper */
+            z-index: 1; /* Para que esté debajo de los bordes del wrapper */
+            text-align: center; /* Centra elementos inline, inline-block o inline-flex */
+        }
+
+        /* Título de la Aplicación (dentro de main-panel) */
+        .app-title {
+            font-family: 'Press Start 2P', cursive;
+            font-size: 2.25rem; /* text-4xl */
+            color: #B4F8C8;
+            text-shadow: 2px 2px #000;
+            margin-bottom: 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            position: relative;
+            padding: 10px 0;
+            width: 100%;
+            box-sizing: border-box;
+        }
+        
+        .app-title img {
+            width: 240px;
+            height: 350px;
+            
+            image-rendering: pixelated;
+        }
+            
+        /* Bordes ASCII para el título */
+        .app-title::before {
+            content: "╔══════════════════════════════════════════════════════════════╗";
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            font-family: 'VT323', monospace;
+            color: #4A5568;
+            font-size: 1.2rem;
+            white-space: nowrap;
+            overflow: hidden;
+            text-align: center;
+            line-height: 1;
+        }
+        .app-title::after {
+            content: "╚═══════════════════════════════════════════════════════════════╝";
+            position: absolute;
+            bottom: 0; left: 0; right: 0;
+            font-family: 'VT323', monospace;
+            color: #4A5568;
+            font-size: 1.2rem;
+            white-space: nowrap;
+            overflow: hidden;
+            text-align: center;
+            line-height: 1;
+        }
+        .app-title span {
+            position: relative;
+            z-index: 1;
+            background-color: #2C3539; /* Coincide con el fondo del panel */
+            padding: 0 10px;
+        }
+
+        /* Estilos de los Botones (Tipo Barra) */
+        .pixel-button {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 15px 30px;
+            border: 2px solid;
+            border-radius: 4px;
+            font-family: 'Press Start 2P', cursive;
+            font-size: 1.125rem;
+            cursor: pointer;
+            transition: all 0.1s ease-in-out;
+            box-shadow: 2px 2px 0px rgba(0,0,0,0.5);
+            text-shadow: 1px 1px #000;
+        }
+
+        .pixel-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 4px 4px 0px rgba(0,0,0,0.5);
+        }
+
+        .pixel-button:active {
+            transform: translateY(0);
+            box-shadow: 1px 1px 0px rgba(0,0,0,0.5);
+        }
+
+        .pixel-button img {
+            width: 32px;
+            height: 32px;
+            margin-right: 10px;
+            image-rendering: pixelated;
+        }
+
+        /* Botón de Seleccionar Imagen */
+        #imageUploadLabel {
+            background-color: #F4D03F;
+            color: #1D2024;
+            border-color: #D4AC0D;
+        }
+
+        /* Botón de Clasificar Fósil */
+        #predictButton {
+            background-color: #5DADE2;
+            color: #FFFFFF;
+            border-color: #2874A6;
+        }
+
+        /* Nuevo botón "Nueva Clasificación" */
+        #newClassificationButton {
+            background-color: #6B7280;
+            color: #FFFFFF;
+            border-color: #4B5563;
+        }
+        #newClassificationButton img {
+            filter: brightness(0) invert(1);
+        }
+
+        /* Oculta el input de archivo original */
+        #imageUpload {
+            display: none;
+        }
+
+        /* Contenedor para el Área de Previsualización (para el mensaje de placeholder) */
+        .preview-container {
+            position: relative;
+            width: 100%;
+            height: 300px; /* Altura fija para el contenedor */
+            border: 4px solid #4A5568; /* Gris Intermedio para el marco */
+            background-color: #1D2024; /* Negro Carbón para el fondo del visor */
+            border-radius: 4px;
+            box-shadow: inset 2px 2px 5px rgba(0,0,0,0.7);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            overflow: hidden;
+        }
+        .preview-container #placeholder-text {
+            color: #9CA3AF;
+            font-size: 1.5rem;
+        }
+        #previewImage {
+            max-width: 100%;
+            height: auto; /* Ajustar altura automáticamente */
+            max-height: 100%; /* Limitar la altura al contenedor */
+            object-fit: contain; /* Asegura que la imagen se ajuste sin recortar */
+            padding: 10px;
+        }
+
+
+        /* Sección de Resultados */
+        #results {
+            background-color: #2C3539;
+            border: 2px solid #4A5568;
+            border-radius: 4px;
+            box-shadow: 2px 2px 0px rgba(0,0,0,0.5);
+            padding: 24px;
+            margin-top: 0rem;
+            text-align: left;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+            width: 100%;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Bordes ASCII para el panel de resultados */
+        #results::before {
+            content: "╔ ══════════════════════════════════════════════════════════════════╗";
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            font-family: 'VT323', monospace;
+            color: #4A5568;
+            font-size: 1.2rem;
+            white-space: nowrap;
+            overflow: hidden;
+            text-align: center;
+            line-height: 1;
+        }
+        #results::after {
+            content: "╚═════════════════════════════════════════════════════════════════╝";
+            position: absolute;
+            bottom: 0; left: 0; right: 0;
+            font-family: 'VT323', monospace;
+            color: #4A5568;
+            font-size: 1.2rem;
+            white-space: nowrap;
+            overflow: hidden;
+            text-align: center;
+            line-height: 1;
+        }
+
+        .results-title {
+            font-family: 'Press Start 2P', cursive;
+            font-size: 1.5rem;
+            color: #B4F8C8;
+            text-shadow: 1px 1px #000;
+            position: relative;
+            text-align: center;
+            width: 100%;
+            background-color: #2C3539; /* Para que el texto no se vea a través del borde ASCII */
+            padding: 0 10px; /* Para que el texto no toque el borde ASCII */
+            z-index: 1; /* Para que el texto esté por encima del borde ASCII */
+            margin-top: 0; /* Eliminar margen superior predeterminado */
+            margin-bottom: 1rem; /* Margen inferior para separar del contenido */
+        }
+
+
+        #predictedClass {
+            font-size: 1.8rem;
+            color: #F4D03F;
+            font-weight: bold;
+            display: block;
+            margin-bottom: 0.5rem;
+            text-align: center;
+            width: 100%;
+        }
+        #confidence {
+            font-size: 1.5rem;
+            color: #B4F8C8;
+            font-weight: bold;
+            display: block;
+            margin-bottom: 1.5rem;
+            text-align: center;
+            width: 100%;
+        }
+
+        /* Probabilidades Detalladas */
+        .probabilities-title {
+            font-family: 'Press Start 2P', cursive;
+            font-size: 1.125rem;
+            color: #9CA3AF;
+            margin-top: 1.5rem;
+            margin-bottom: 1rem;
+            text-align: center;
+            width: 100%;
+            position: relative;
+            background-color: #2C3539; /* Para que el texto no se vea a través del borde ASCII */
+            padding: 0 10px; /* Para que el texto no toque el borde ASCII */
+            z-index: 1; /* Para que el texto esté por encima del borde ASCII */
+        }
+        .probabilities-title::before, .probabilities-title::after {
+            content: "═";
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #9CA3AF;
+            font-family: 'VT323', monospace;
+            font-size: 1.2rem;
+            white-space: nowrap;
+        }
+        .probabilities-title::before {
+            left: 0;
+            margin-left: -20px;
+            width: 100px;
+            overflow: hidden;
+        }
+        .probabilities-title::after {
+            right: 0;
+            margin-right: -20px;
+            width: 100px;
+            overflow: hidden;
+        }
+        @media (max-width: 768px) {
+            .probabilities-title::before, .probabilities-title::after {
+                width: 50px;
+                margin-left: -10px;
+                margin-right: -10px;
+            }
+        }
+
+        #allProbabilities ul {
+            width: 100%;
+            max-width: 400px;
+            margin-left: auto;
+            margin-right: auto;
+            padding-bottom: 20px; /* Espacio para el borde inferior del results */
+        }
+        .probability-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 0.5rem;
+            font-family: 'VT323', monospace;
+            font-size: 1.1rem;
+            color: #B4F8C8;
+            justify-content: space-between;
+        }
+        .probability-item span {
+            flex-shrink: 0;
+            margin-right: 10px;
+        }
+        .probability-bar-container {
+            flex-grow: 1;
+            background-color: #4A5568;
+            border-radius: 2px;
+            height: 10px;
+            margin-left: 0;
+            margin-right: 0;
+            overflow: hidden;
+            position: relative;
+        }
+        .probability-bar {
+            height: 100%;
+            background-color: #00FF00;
+            width: 0%;
+            transition: width 0.8s ease-out;
+            border-radius: 2px;
+        }
+
+        /* Animación de Carga (Spinner tipo terminal) */
+        .loader {
+            font-family: 'VT323', monospace;
+            font-size: 2rem;
+            color: #B4F8C8;
+            text-align: center;
+            margin-top: 2rem;
+            display: none;
+        }
+        .loader span {
+            animation: pulse 1s infinite alternate;
+        }
+        .loader span:nth-child(2) { animation-delay: 0.2s; }
+        .loader span:nth-child(3) { animation-delay: 0.4s; }
+        @keyframes pulse {
+            0% { opacity: 0.2; }
+            100% { opacity: 1; }
+        }
+
+        /* Mensajes de Error */
+        #errorMessage {
+            background-color: #FF0000;
+            color: #FFFFFF;
+            border: 2px solid #CC0000;
+            border-radius: 4px;
+            padding: 10px;
+            margin-top: 2rem;
+            font-family: 'Press Start 2P', cursive;
+            font-size: 0.9rem;
+            text-align: center;
+            display: none;
+        }
+
+        /* Clase base para las secciones de contenido dinámico */
+        .app-section {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .app-section .section-title { /* Títulos para las sub-secciones */
+            font-family: 'Press Start 2P', cursive;
+            font-size: 1.8rem;
+            color: #F4D03F;
+            text-shadow: 1px 1px #000;
+            margin-bottom: 2rem;
+        }
+
+
+        /* Media query para pantallas pequeñas (menos de 768px, donde md:flex-row no aplica) */
+        @media (max-width: 767px) {
+            .app-wrapper {
+                flex-direction: column; /* Apilar sidebar y main content */
+                max-width: 600px; /* Ajustar ancho para móviles */
+                min-height: auto; /* Permitir que la altura se ajuste al contenido */
+            }
+            .sidebar-panel {
+                width: 100%; /* Sidebar ocupa todo el ancho */
+                border-right: none; /* Sin borde derecho */
+                border-bottom: 2px solid #4A5568; /* Borde inferior al apilar */
+                padding-top: 20px; /* Ajustar padding */
+                padding-bottom: 10px;
+                align-items: center; /* Centrar ítems en móvil */
+            }
+            .sidebar-panel::before {
+                top: 5px; /* Ajustar posición del título Maestro */
+                left: 50%;
+                transform: translateX(-50%);
+                white-space: normal; /* Permitir salto de línea si es largo */
+            }
+            .sidebar-panel::after {
+                display: none; /* Ocultar líneas verticales en móvil */
+            }
+            .main-panel {
+                padding-top: 20px; /* Ajustar padding */
+                padding-bottom: 20px;
+            }
+            .app-title::before, .app-title::after {
+                width: 50%; /* Líneas de título más cortas en móvil */
+                left: 0;
+                right: 0;
+                margin-left: 0;
+                margin-right: 0;
+                transform: none;
+            }
+            .app-title::before {
+                content: "╔════════════════════════════════════════╗";
+                top: 0;
+            }
+            .app-title::after {
+                content: "╚════════════════════════════════════════╝";
+                bottom: 0;
+            }
+            .app-title span {
+                padding: 0 5px;
+            }
+        }

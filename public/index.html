@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Clasificador de Fósiles</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="../src/renderer/styles/index.css">
+    <link rel="stylesheet" href="../pages/styles/desplegables.css">
+    <link rel="stylesheet" href="../pages/styles/chatbot.css">
+</head>
+<body class="bg-gray-900 text-gray-100 flex flex-col items-center justify-center min-h-screen p-4">
+    
+    <!-- Contenedor principal de toda la aplicación (sidebar + main content) -->
+    <div class="app-wrapper">
+        <!-- Panel Lateral (Sidebar) -->
+        <div class="sidebar-panel">
+            <!-- Los "Elemento 1, 2, 3" se convierten en botones de navegación -->
+          <button id="menuButton-classify" class="sidebar-item">CLASIFICADOR<img src="../pages/assets/lupita.png" alt="dino Icon" ></button>
+            <button id="menuButton-history" class="sidebar-item">HISTORIAL DE CLASIFICACIONES<img src="../pages/assets/carpeta.png" alt="dino Icon" ></button>
+            <button id="menuButton-explore" class="sidebar-item">INFORMACIÓN DE FÓSILES<img src="../pages/assets/baul.png" alt="dino Icon" ></button>
+            <!--chatbot-->
+            <button id="menuButton-chatbot" class="sidebar-item">Habla con Dennis <img src="../pages/assets/dinos.png" alt="dino Icon" ></button>
+             <button id="menuButton-about" class="sidebar-item" >ACERCA DE LA APP </button>
+             <button onclick="cerrarApp()" class="pixel-button bg-red-600">Salir</button>
+
+        </div>
+    <div class="main-panel" id="mainContent">
+        
+        <h1 class="app-title" id="mainAppTitle">
+            <img id="ammonites_icon" src="../pages/assets/NaturalCamLogo.png" alt="Ammonites Icon" class="hidden" >
+            CLASIFICADOR DE FÓSILES
+        </h1>
+        
+        <div id="errorMessage" class="hidden" style="background-color: #FF0000; color: #FFFFFF; padding: 10px; border-radius: 5px; margin-bottom: 10px;"></div>
+ 
+        <input type="file" id="imageUpload" accept="image/*" />
+        <label for="imageUpload" id="imageUploadLabel" class="pixel-button">
+            <img id="folder_icon" src="../pages/assets/NaturalCam.png" alt="Folder Icon" class="hidden">
+            SELECCIONAR IMAGEN
+        </label>
+        
+        <img id="previewImage" class="hidden" alt="Vista previa de la imagen seleccionada" />
+
+        <button id="predictButton" class="pixel-button mt-6 disabled:opacity-50 disabled:cursor-not-allowed hidden">
+            <img id="magnifying_glass_icon" src="../pages/assets/NaturalCam.png" alt="Magnifying Glass Icon" class="hidden">
+            CLASIFICAR FÓSIL
+        </button>
+        
+        <button id="newClassificationButton" class="pixel-button mt-4 hidden" type="button">
+            <img id="reset_icon" src="../pages/assets/NaturalCam.png" alt="Reset Icon" class="hidden">
+            NUEVA CLASIFICACIÓN
+        </button>
+
+        <div id="loadingSpinner" class="loader">
+            <span>.</span><span>.</span><span>.</span> ANALIZANDO <span>.</span><span>.</span><span>.</span>
+        </div>
+
+        <div id="results" class="hidden">
+            <h2 class="results-title">RESULTADOS</h2>
+            <p><span id="predictedClass"></span></p>
+            <p><span id="confidence"></span></p>
+            <ul></ul>
+            
+            <div id="allProbabilities">
+                <h3 class="probabilities-title">═ PROBABILIDADES ═</h3>
+                
+                </div>
+        </div>
+
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+        const ammonitesIcon = document.getElementById('ammonites_icon');
+        const folderIcon = document.getElementById('folder_icon');
+        const magnifyingGlassIcon = document.getElementById('magnifying_glass_icon');
+
+        const showIcon = (iconElement) => {
+            if (iconElement) iconElement.classList.remove('hidden');
+        };
+
+        if (ammonitesIcon) {
+            ammonitesIcon.onload = () => showIcon(ammonitesIcon);
+            if (ammonitesIcon.complete) showIcon(ammonitesIcon);
+        }
+        if (folderIcon) {
+            folderIcon.onload = () => showIcon(folderIcon);
+            if (folderIcon.complete) showIcon(folderIcon);
+        }
+        if (magnifyingGlassIcon) {
+            magnifyingGlassIcon.onload = () => showIcon(magnifyingGlassIcon);
+            if (magnifyingGlassIcon.complete) showIcon(magnifyingGlassIcon);
+        }
+    });
+
+    const imageUpload = document.getElementById('imageUpload');
+    const previewImage = document.getElementById('previewImage');
+    const predictButton = document.getElementById('predictButton');
+    const loadingSpinner = document.getElementById('loadingSpinner');
+    const resultsDiv = document.getElementById('results');
+    const predictedClassSpan = document.getElementById('predictedClass');
+    const confidenceSpan = document.getElementById('confidence');
+    const allProbabilitiesDiv = document.getElementById('allProbabilities');
+    const errorMessage = document.getElementById('errorMessage');
+
+    let selectedFile = null;
+    const API_URL = 'http://127.0.0.1:5000/predict';
+
+    if (previewImage) previewImage.classList.add('hidden');
+    if (predictButton) predictButton.classList.add('hidden');
+    if (resultsDiv) resultsDiv.classList.add('hidden');
+    if (loadingSpinner) loadingSpinner.style.display = 'none';
+    if (errorMessage) errorMessage.classList.add('hidden');
+
+    if (imageUpload) {
+        imageUpload.addEventListener('change', function(event) {
+            selectedFile = event.target.files[0];
+            if (selectedFile) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    if (previewImage) {
+                        previewImage.src = e.target.result;
+                        previewImage.classList.remove('hidden');
+                    }
+                    if (predictButton) predictButton.classList.remove('hidden');
+                    if (resultsDiv) resultsDiv.classList.add('hidden');
+                    resultsDiv.style.display = 'block'; // Asegúrate de que esto se resetea si se oculta después
+                    if (errorMessage) errorMessage.classList.add('hidden');
+                    if (newClassificationButton) newClassificationButton.classList.add('hidden');
+
+                    // ✅ Guardar imagen en base64 en localStorage
+                    localStorage.setItem('tempImage', e.target.result);
+                };
+                reader.readAsDataURL(selectedFile);
+            } else {
+                if (previewImage) previewImage.classList.add('hidden');
+                if (predictButton) predictButton.classList.add('hidden');
+                if (resultsDiv) resultsDiv.classList.add('hidden');
+            }
+        });
+    }
+
+    // Evento para nueva clasificación
+    if (newClassificationButton) {
+        newClassificationButton.addEventListener('click', function() {
+            selectedFile = null;
+            if (imageUpload) imageUpload.value = '';
+            if (previewImage) previewImage.classList.add('hidden');
+            if (previewImage) previewImage.src = '';
+            if (predictButton) predictButton.classList.add('hidden');
+            if (resultsDiv) resultsDiv.classList.add('hidden');
+            if (newClassificationButton) newClassificationButton.classList.add('hidden');
+            if (errorMessage) errorMessage.classList.add('hidden');
+        });
+    }
+
+    if (predictButton) {
+        predictButton.addEventListener('click', async function() {
+            if (!selectedFile) {
+                if (errorMessage) {
+                    errorMessage.textContent = "¡ERROR! Por favor, selecciona una imagen primero.";
+                    errorMessage.classList.remove('hidden');
+                    errorMessage.style.backgroundColor = '#FF0000'; 
+                    errorMessage.style.color = '#FFFFFF';
+                }
+                return;
+            }
+
+            if (loadingSpinner) loadingSpinner.style.display = 'block'; 
+            if (predictButton) predictButton.disabled = true; 
+            if (resultsDiv) resultsDiv.classList.add('hidden');
+            if (errorMessage) errorMessage.classList.add('hidden');
+
+            const formData = new FormData();
+            formData.append('file', selectedFile);
+
+            try {
+                const response = await fetch(API_URL, {
+                    method: 'POST',
+                    body: formData
+                });
+
+                // --- INICIO DE LA CORRECCIÓN CLAVE ---
+                // Clonar la respuesta para poder leer su cuerpo múltiples veces si es necesario
+                const responseCopy = response.clone();
+
+                if (!response.ok) {
+                    let errorDetails = "Error desconocido.";
+                    try {
+                        // Intenta leer el cuerpo como JSON del CLON
+                        const errorJson = await responseCopy.json(); 
+                        if (errorJson && errorJson.error) {
+                            errorDetails = errorJson.error;
+                        } else if (response.status === 500) {
+                            errorDetails = "Error interno del servidor. Por favor, revisa los logs del backend.";
+                        }
+                    } catch (e) {
+                        // Si falla la lectura como JSON, lee como texto (del CLON también)
+                        errorDetails = await responseCopy.text();
+                        if (response.status === 500 && errorDetails.length > 200) { // Evitar mensajes de error HTML largos
+                            errorDetails = "Error interno del servidor. Respuesta demasiado larga o inesperada. Revisa los logs del backend.";
+                        }
+                    }
+                    throw new Error(`Error en la API (${response.status}): ${errorDetails}`);
+                }
+
+                // Si la respuesta es OK, lee el JSON del objeto 'response' original (no del clon)
+                const data = await response.json(); 
+                // --- FIN DE LA CORRECCIÓN CLAVE ---
+
+
+                // ✅ Guardar en historial
+                const imageBase64 = localStorage.getItem('tempImage') || '';
+                const historialItem = {
+                    timestamp: new Date().toLocaleString(),
+                    prediction: data.prediction,
+                    confidence: data.confidence.toFixed(2),
+                    image: imageBase64
+                };
+
+                const historial = JSON.parse(localStorage.getItem('historial_fosiles')) || [];
+                historial.unshift(historialItem);
+                localStorage.setItem('historial_fosiles', JSON.stringify(historial));
+
+                // Mostrar resultados
+                if (predictedClassSpan) predictedClassSpan.innerHTML = `CLASE PREDICHA: <span style="color:#F4D03F;">${data.prediction.toUpperCase()}</span>`; 
+                if (confidenceSpan) confidenceSpan.innerHTML = `CONFIANZA: <span style="color:#B4F8C8;">${data.confidence.toFixed(2)}%</span>`;
+
+                if (allProbabilitiesDiv) {
+                    allProbabilitiesDiv.innerHTML = `<h3 class="probabilities-title">═ PROBABILIDADES ═</h3>`;
+                    const ul = document.createElement('ul');
+                    ul.classList.add('list-none', 'p-0', 'm-0');
+
+                    if (data.all_probabilities) {
+                        const sortedProbabilities = Object.entries(data.all_probabilities).sort(([,a],[,b]) => b - a);
+                        for (const [className, prob] of sortedProbabilities) {
+                            const li = document.createElement('li');
+                            li.classList.add('probability-item');
+                            li.innerHTML = `<span>${className.toUpperCase()}: ${prob.toFixed(2)}%</span>
+                                <div class="probability-bar-container">
+                                    <div class="probability-bar" style="width: ${prob}%;"></div>
+                                </div>`;
+                            ul.appendChild(li);
+                        }
+                    }
+                    allProbabilitiesDiv.appendChild(ul);
+                }
+
+                if (resultsDiv) resultsDiv.classList.remove('hidden');
+                if (newClassificationButton) newClassificationButton.classList.remove('hidden');
+
+            } catch (error) {
+                console.error('Error al clasificar la imagen:', error);
+                if (errorMessage) {
+                    errorMessage.innerHTML = `<span>!</span> ERROR: ${error.message}. Asegúrate de que el servidor de la API esté corriendo.`;
+                    errorMessage.classList.remove('hidden');
+                    errorMessage.style.backgroundColor = '#FF0000'; 
+                    errorMessage.style.color = '#FFFFFF';
+                }
+            } finally {
+                if (loadingSpinner) loadingSpinner.style.display = 'none';
+                if (predictButton) predictButton.disabled = false;
+            }
+        });
+    }
+    </script>
+
+<script>
+async function loadView(viewName) {
+    try {
+        const response = await fetch(`../src/renderer/pages/${viewName}.html?nocache=${Date.now()}`);
+        const html = await response.text();
+        document.getElementById('mainContent').innerHTML = html;
+
+        if (viewName === 'history') {
+            const script = document.createElement('script');
+            script.type = 'module';
+            script.src = '../src/renderer/history.js';
+            script.onload = () => {
+                import('../src/renderer/history.js').then(module => {
+                    module.mostrarHistorialFosiles();
+                });
+            };
+            document.body.appendChild(script);
+        }
+
+          // ✅ Asegurarse de cargar chatbot.js después de insertar el HTML
+        if (viewName === 'chatbot') {
+            const script = document.createElement('script');
+            script.type = 'module';
+            script.src = '../src/renderer/chatbot.js';
+            document.body.appendChild(script);
+        }
+
+
+    } catch (error) {
+        document.getElementById('mainContent').innerHTML = '<p class="text-red-500">Error al cargar la vista.</p>';
+        console.error('Error al cargar vista:', error);
+    }
+}
+
+
+
+    // Asignar eventos a los botones del menú
+    document.getElementById('menuButton-classify').addEventListener('click', () => window.location.href = 'index.html');
+    document.getElementById('menuButton-history').addEventListener('click', () => loadView('history'));
+    document.getElementById('menuButton-explore').addEventListener('click', () => loadView('explore'));
+    document.getElementById('menuButton-about').addEventListener('click', () => loadView('about'));
+    document.getElementById('menuButton-chatbot').addEventListener('click', () => loadView('chatbot'));
+
+</script>
+
+<script>
+    // NO usar alert() en Electron, ya que bloquea el proceso.
+    // En su lugar, usa el módulo 'dialog' de Electron o un modal en tu UI.
+    function cerrarApp() {
+        console.log("Intentando cerrar la aplicación...");
+        // Para cerrar la aplicación Electron de forma segura, necesitas comunicarte con el proceso principal.
+        // Esto generalmente se hace a través de ipcRenderer.send().
+        // Como este es un script directamente en HTML, y no tienes ipcRenderer aquí,
+        // window.close() intentará cerrar la ventana del navegador, pero no la aplicación Electron completa.
+        // Para cerrar la app de forma segura desde el renderer:
+        // const { ipcRenderer } = require('electron');
+        // ipcRenderer.send('app-quit');
+        // Y en main.js, necesitarías:
+        // ipcMain.on('app-quit', () => app.quit());
+        
+        // Por ahora, para evitar el alert() y para pruebas, puedes dejar window.close()
+        // pero ten en cuenta que no es la forma ideal de salir de una app Electron.
+        window.close();
+    }
+</script>
+
+</body>
+</html>

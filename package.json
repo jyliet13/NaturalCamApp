@@ -1,0 +1,46 @@
+{
+  "name": "fossil-classifier-electron-app",
+  "version": "1.0.0",
+  "description": "Aplicación de escritorio para clasificar fósiles con IA (TFG)",
+  "main": "src/Main.js",
+  "scripts": {
+    "start": "electron .",
+    "build-win": "electron-builder --win",
+    "build-linux": "electron-builder --linux",
+    "build-mac": "electron-builder --mac"
+  },
+  "build": {
+    "appId": "com.tuempresa.naturalcam",
+    "productName": "NaturalCam",
+    "files": [
+      "src/**/*",
+      "public/**/*",
+      "pages/**/*",
+      "models/**/*",
+      "!uploads",
+      "package.json"
+    ],
+    "directories": {
+      "buildResources": "assets"
+    },
+    "win": {
+      "icon": "assets/NaturalCamLogo.ico",
+      "target": ["nsis", "portable"]
+    },
+    "linux": {
+      "icon": "assets/NaturalCamLogo.png"
+    },
+    "mac": {
+      "icon": "assets/NaturalCamLogo.icns"
+    }
+  },
+  "author": "Juliet Acevedo",
+  "license": "ISC",
+  "devDependencies": {
+    "electron": "^29.0.0",
+    "electron-builder": "^24.0.0"
+  },
+  "dependencies": {
+    "electron-store": "^10.1.0"
+  }
+}
