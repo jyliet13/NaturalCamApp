@@ -1,4 +1,4 @@
-﻿# naturalCam
+﻿# Modelo naturalCam
 
 Proyecto de clasificacion de fosiles con una CNN basada en transferencia de aprendizaje con `MobileNetV2`.
 
